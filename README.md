@@ -87,24 +87,24 @@ cd ../frontend
 npm install
 npm start
 
-#🧪 Environment Variables
-#🔐 Backend (backend/.env)
+🧪 Environment Variables
+🔐 Backend (backend/.env)
 MONGO_URI=your_mongodb_connection
 JWT_SECRET=your_jwt_secret
-#🌍 Frontend (frontend/.env)
+🌍 Frontend (frontend/.env)
 REACT_APP_API_URL=https://your-backend-api.onrender.com
 
 
-#✍️ Author
+✍️ Author
 Vamsi
 B.Tech Student | MERN Developer | Open to Internships
-#profile:
+profile:
 https://github.com/vamsi746 
 
-#📜 License
+📜 License
 This project is licensed under the MIT License.
 
-#🙌 Acknowledgements
+🙌 Acknowledgements
 React and Tailwind CSS Community
 
 MongoDB and Express.js Documentation
