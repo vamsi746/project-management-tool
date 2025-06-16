@@ -4,8 +4,8 @@ A full-featured Project Management Tool built using the **MERN stack** that help
 
 ## 🌐 Live Demo
 
-- **Frontend (Vercel):** https://your-vercel-url.vercel.app  
-- **Backend (Render):** https://your-render-url.onrender.com
+- **Frontend (Vercel):https://project-management-tool-delta-rosy.vercel.app/ 
+- **Backend (Render):https://project-management-tool-wtmq.onrender.com/
 
 ---
 
