@@ -1,6 +1,6 @@
 // src/pages/Login.js
 import React, { useState } from 'react';
-import axios from '../api/axiosInstance';
+import axiosInstance from '../utils/axiosInstance';
 
 import { useNavigate } from 'react-router-dom';
 

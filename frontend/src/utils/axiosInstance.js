@@ -1,5 +1,6 @@
 // src/utils/axiosInstance.js
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
+
 
 const axiosInstance = axios.create({
   baseURL: 'https://project-management-tool-wtmq.onrender.com',
