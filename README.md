@@ -42,34 +42,32 @@ A full-featured Project Management Tool built using the **MERN stack** that help
 - CORS & dotenv
 
 ---
-
 ## 📁 Folder Structure
 
+```
 project-management-tool/
 │
 ├── backend/
-│ ├── controllers/
-│ ├── models/
-│ ├── routes/
-│ ├── .env
-│ ├── server.js
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   ├── .env
+│   ├── server.js
 │
 ├── frontend/
-│ ├── public/
-│ ├── src/
-│ │ ├── components/
-│ │ ├── pages/
-│ │ ├── App.js
-│ │ ├── index.js
-│ ├── .env
-│ ├── tailwind.config.js
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── App.js
+│   │   ├── index.js
+│   ├── .env
+│   ├── tailwind.config.js
 │
 ├── .gitignore
 ├── README.md
+```
 
-
-
----
 
 ## 🛠️ Setup Instructions (Local)
 
