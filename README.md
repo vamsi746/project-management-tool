@@ -109,7 +109,6 @@ React and Tailwind CSS Community
 
 MongoDB and Express.js Documentation
 
-OpenAI GPT for guidance and debugging
 
 
 
