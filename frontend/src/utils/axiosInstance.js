@@ -2,22 +2,25 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'https://project-management-tool-wtmq.onrender.com',
-  withCredentials: true, // optional: for cookies/session if used
+  baseURL: 'https://project-management-tool-wtmq.onrender.com', // ✅ updated to include /api
+  withCredentials: true, // only needed if using cookies or sessions
   headers: {
     'Content-Type': 'application/json',
   }
 });
 
-// Automatically attach token if present
-axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+// ✅ Automatically attach token if it exists
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-}, (error) => {
-  return Promise.reject(error);
-});
+);
 
 export default axiosInstance;
