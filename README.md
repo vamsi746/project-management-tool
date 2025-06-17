@@ -95,11 +95,17 @@ JWT_SECRET=your_jwt_secret
 REACT_APP_API_URL=https://your-backend-api.onrender.com
 
 
-✍️ Author :
-Vamsi
-  B.Tech Student | MERN Developer | Open to Internships
-profile:
-https://github.com/vamsi746 
+---
+
+## ✍️ Author
+
+# **🔥 VAMSI 🔥**
+
+🔗 **GitHub Profile:**  
+[https://github.com/vamsi746](https://github.com/vamsi746)
+
+🚀 **Passionate Web Developer & Builder of Cool Things**
+
 
 📜 License:
 This project is licensed under the MIT License.
