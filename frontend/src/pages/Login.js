@@ -1,6 +1,7 @@
 // src/pages/Login.js
 import React, { useState } from 'react';
-import axios from 'axios'; // You can replace this with axiosInstance if needed
+import axios from '../api/axiosInstance';
+
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
@@ -16,13 +17,22 @@ function Login() {
     setLoading(true);
     
     try {
-      const res = await axios.post('http://localhost:5000/auth/login', {
-        email: email.trim(),
-        password: password.trim(),
-      });
+      const res = await axios.post(
+        'https://project-management-tool-wtmq.onrender.com/auth/login',
+        {
+          email: email.trim(),
+          password: password.trim(),
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       localStorage.setItem('token', res.data.token);
-      navigate('/dashboard'); // or '/' if your home page is dashboard
+      localStorage.setItem('user', JSON.stringify(res.data.user)); // optional
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {

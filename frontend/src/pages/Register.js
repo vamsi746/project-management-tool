@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
@@ -23,7 +23,7 @@ function Register() {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/auth/register', {
+      const res = await axios.post('https://project-management-tool-wtmq.onrender.com/auth/register', {
         name: name.trim(),
         email: email.trim(),
         password: password.trim(),

@@ -2,7 +2,8 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000',
+  baseURL: 'https://project-management-tool-wtmq.onrender.com',
+  withCredentials: true, // if using cookies
 });
 
 // Automatically attach token
