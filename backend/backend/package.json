@@ -1,8 +1,4 @@
 {
-<<<<<<< HEAD
-  "dependencies": {
-    "recharts": "^2.15.3"
-=======
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
@@ -24,6 +20,5 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
->>>>>>> ca59d7b (Updated CORS config and cleaned backend)
   }
 }
