@@ -99,7 +99,7 @@ REACT_APP_API_URL=https://your-backend-api.onrender.com
 
 ## ✍️ Author
 
-# **🔥 VAMSI 🔥**
+# **🔥 VAMSI(Lakshmi Narayana)🔥**
 
 🔗 **GitHub Profile:**  
 [https://github.com/vamsi746](https://github.com/vamsi746)
