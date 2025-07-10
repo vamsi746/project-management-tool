@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: 'https://project-management-tool-wtmq.onrender.com/api', // ✅ updated to include /api
-  withCredentials: true, // only needed if using cookies or sessions
+  withCredentials: false, // only needed if using cookies or sessions
   headers: {
     'Content-Type': 'application/json',
   }
