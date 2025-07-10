@@ -1,117 +1,84 @@
 import React, { useState } from 'react';
-import axiosInstance from '../utils/axiosInstance';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage('');
-    setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage('');
+    setLoading(true);
 
-    if (!name.trim() || !email.trim() || !password.trim()) {
-      setMessage('All fields are required');
-      setLoading(false);
-      return;
-    }
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      setMessage('All fields are required');
+      setLoading(false);
+      return;
+    }
 
-    try {
-      const res = await axiosInstance.post('/auth/register', {
-        name: name.trim(),
-        email: email.trim(),
-        password: password.trim(),
-      });
+    try {
+      const res = await axios.post('http://localhost:5000/auth/register', {
+        name: name.trim(),
+        email: email.trim(),
+        password: password.trim(),
+      });
 
-      setMessage(res.data.message || 'Registered successfully');
-      setTimeout(() => navigate('/login'), 2000);
-    } catch (err) {
-      setMessage(err.response?.data?.message || 'Registration failed');
-    } finally {
-      setLoading(false);
-    }
-  };
+      setMessage(res.data.message || 'Registered successfully');
+      setTimeout(() => navigate('/login'), 2000);
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Registration failed');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  return (
-    <div style={styles.container}>
-      <h2 style={styles.title}>Register</h2>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={styles.input}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={styles.input}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
-          required
-        />
-        <button type="submit" style={styles.button} disabled={loading}>
-          {loading ? 'Registering...' : 'Register'}
-        </button>
-        {message && <p style={styles.message}>{message}</p>}
-      </form>
-    </div>
-  );
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-900 dark:to-gray-800 p-4">
+      <div className="w-full max-w-md bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold mb-4 text-center">Register</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-3 py-2 border rounded dark:bg-gray-700"
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-3 py-2 border rounded dark:bg-gray-700"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-3 py-2 border rounded dark:bg-gray-700"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+            disabled={loading}
+          >
+            {loading ? 'Registering...' : 'Register'}
+          </button>
+          {message && <p className="text-center text-red-500">{message}</p>}
+        </form>
+      </div>
+    </div>
+  );
 }
-
-const styles = {
-  container: {
-    maxWidth: '400px',
-    margin: '100px auto',
-    padding: '20px',
-    borderRadius: '8px',
-    boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-    backgroundColor: '#fff',
-    textAlign: 'center',
-  },
-  title: {
-    marginBottom: '20px',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
-  },
-  input: {
-    padding: '10px',
-    fontSize: '16px',
-    borderRadius: '6px',
-    border: '1px solid #ccc',
-  },
-  button: {
-    padding: '10px',
-    fontSize: '16px',
-    backgroundColor: '#28a745',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '6px',
-    cursor: 'pointer',
-  },
-  message: {
-    marginTop: '10px',
-    color: '#dc3545',
-  },
-};
 
 export default Register;
