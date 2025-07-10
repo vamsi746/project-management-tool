@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axiosInstance from '../utils/axiosInstance'; // ✅ Make sure path is correct
+import axiosInstance from '../utils/axiosInstance';
 import { Gantt, ViewMode } from 'gantt-task-react';
 import 'gantt-task-react/dist/index.css';
 
@@ -13,48 +13,39 @@ function GanttChart() {
 
   const fetchTasks = async () => {
     try {
-      const res = await axiosInstance.get('/tasks'); // ✅ central instance
-      const formattedTasks = res.data
+      const res = await axiosInstance.get('/tasks');
+      const formatted = res.data
         .filter(task => task.createdAt && task.dueDate)
-        .map(task => {
-          const start = new Date(task.createdAt);
-          const end = new Date(task.dueDate);
-          if (isNaN(start) || isNaN(end)) return null;
-
-          return {
-            id: task._id,
-            name: task.title || 'Untitled',
-            start,
-            end,
-            type: 'task',
-            progress: 0,
-            isDisabled: false,
-            styles: {
-              progressColor: '#6aa1e3',
-              progressSelectedColor: '#406fb5'
-            }
-          };
-        })
-        .filter(Boolean); // remove null entries
-
-      setTasks(formattedTasks);
-    } catch (error) {
-      console.error('Error fetching Gantt chart data:', error);
+        .map(task => ({
+          id: task._id,
+          name: task.title,
+          start: new Date(task.createdAt),
+          end: new Date(task.dueDate),
+          type: 'task',
+          progress: 0,
+          isDisabled: false,
+          styles: {
+            progressColor: '#3b82f6',
+            progressSelectedColor: '#2563eb',
+          },
+        }));
+      setTasks(formatted);
+    } catch (err) {
+      console.error('Gantt chart error:', err);
     }
   };
 
-  const handleViewChange = (e) => {
-    const mode = e.target.value;
-    setViewMode(mode);
-  };
-
   return (
-    <div style={{ padding: '20px' }}>
-      <h2 style={{ marginBottom: '1rem' }}>Gantt Chart</h2>
+    <div className="min-h-screen p-4 bg-gray-100 dark:bg-gray-900">
+      <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">📅 Gantt Chart</h2>
 
-      <div style={{ marginBottom: '10px' }}>
-        <label style={{ marginRight: '8px' }}>Select View Mode:</label>
-        <select value={viewMode} onChange={handleViewChange}>
+      <div className="mb-4">
+        <label className="mr-2 text-gray-700 dark:text-gray-300">View Mode:</label>
+        <select
+          value={viewMode}
+          onChange={(e) => setViewMode(e.target.value)}
+          className="px-3 py-1 rounded dark:bg-gray-800 border"
+        >
           <option value={ViewMode.Hour}>Hour</option>
           <option value={ViewMode.Day}>Day</option>
           <option value={ViewMode.Week}>Week</option>
@@ -62,13 +53,13 @@ function GanttChart() {
         </select>
       </div>
 
-      {tasks.length > 0 ? (
-        <div style={{ overflowX: 'auto' }}>
+      <div className="overflow-x-auto">
+        {tasks.length > 0 ? (
           <Gantt tasks={tasks} viewMode={viewMode} />
-        </div>
-      ) : (
-        <p>No tasks with valid start and end dates.</p>
-      )}
+        ) : (
+          <p className="text-gray-600">No valid tasks found.</p>
+        )}
+      </div>
     </div>
   );
 }
