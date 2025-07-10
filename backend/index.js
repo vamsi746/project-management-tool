@@ -1,7 +1,6 @@
 // backend/index.js
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
@@ -11,17 +10,26 @@ const PORT = process.env.PORT || 5000;
 const taskRoutes = require('./routes/tasks');
 const authRoutes = require('./routes/auth');
 
-// 🔒 CORS configuration
-app.use(
-  cors({
-    origin: [
-      'http://localhost:3000',
-      'https://project-management-tool-k4sdn3hnx-vamsi746s-projects.vercel.app',
-      'https://project-management-tool-delta-rosy.vercel.app'// ✅ your Vercel frontend
-    ],
-    credentials: false, // ❌ disable credentials since you are using JWT in headers
-  })
-);
+// ✅ Custom CORS middleware
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://project-management-tool-k4sdn3hnx-vamsi746s-projects.vercel.app',
+  'https://project-management-tool-delta-rosy.vercel.app'
+];
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
 
 // 🌐 Body parser
 app.use(express.json());
