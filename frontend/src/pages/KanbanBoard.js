@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axiosInstance from '../utils/axiosInstance'; // ✅ Ensure this path is correct
+import axiosInstance from '../utils/axiosInstance';
 import { Link } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
@@ -14,23 +14,21 @@ function KanbanBoard() {
 
   const fetchTasks = async () => {
     try {
-      const res = await axiosInstance.get('/tasks'); // ✅ use axiosInstance
+      const res = await axiosInstance.get('/tasks');
       setTasks(res.data);
     } catch (err) {
       console.error('Error fetching tasks:', err);
     }
   };
 
-  const handleDragEnd = async (result) => {
-    const { destination, source, draggableId } = result;
-
+  const handleDragEnd = async ({ destination, source, draggableId }) => {
     if (!destination || destination.droppableId === source.droppableId) return;
 
     try {
       await axiosInstance.put(`/tasks/${draggableId}`, {
-        status: destination.droppableId
+        status: destination.droppableId,
       });
-      fetchTasks(); // Re-fetch to reflect status update
+      fetchTasks();
     } catch (err) {
       console.error('Error updating status:', err);
     }
@@ -38,97 +36,55 @@ function KanbanBoard() {
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case 'High': return '#f44336';
-      case 'Medium': return '#ff9800';
-      case 'Low': return '#4caf50';
-      default: return '#9e9e9e';
+      case 'High': return 'border-red-500';
+      case 'Medium': return 'border-yellow-500';
+      case 'Low': return 'border-green-500';
+      default: return 'border-gray-400';
     }
   };
 
   return (
-    <div style={{ padding: '1rem', background: '#f0f2f5', minHeight: '100vh' }}>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px' }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {statusOptions.map(status => (
-            <Droppable key={status} droppableId={status}>
+            <Droppable droppableId={status} key={status}>
               {(provided) => (
                 <div
-                  {...provided.droppableProps}
                   ref={provided.innerRef}
-                  style={{
-                    flex: 1,
-                    padding: '1rem',
-                    borderRadius: '8px',
-                    background: '#ffffff',
-                    boxShadow: '0 0 8px rgba(0, 0, 0, 0.1)',
-                    minHeight: '500px'
-                  }}
+                  {...provided.droppableProps}
+                  className="bg-white dark:bg-gray-800 p-4 rounded shadow min-h-[500px]"
                 >
-                  <h3 style={{ borderBottom: '2px solid #ccc', paddingBottom: '8px' }}>{status}</h3>
-                  {tasks.filter(task => task.status === status).length === 0 && (
-                    <p style={{ color: '#888', fontStyle: 'italic' }}>No tasks</p>
+                  <h3 className="text-lg font-semibold border-b mb-3">{status}</h3>
+                  {tasks.filter(t => t.status === status).length === 0 && (
+                    <p className="text-sm italic text-gray-400">No tasks</p>
                   )}
-                  {tasks
-                    .filter(task => task.status === status)
-                    .map((task, index) => (
-                      <Draggable key={task._id} draggableId={task._id} index={index}>
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={{
-                              background: '#fafafa',
-                              borderLeft: `6px solid ${getPriorityColor(task.priority)}`,
-                              padding: '12px',
-                              marginBottom: '12px',
-                              borderRadius: '8px',
-                              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)',
-                              ...provided.draggableProps.style
-                            }}
-                          >
-                            <h4 style={{ margin: '0 0 6px 0' }}>{task.title}</h4>
-                            <p style={{ margin: '0 0 6px 0' }}>{task.description}</p>
-                            <p style={{ margin: '0 0 6px 0' }}>
-                              <strong>Due:</strong> {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'Not set'}
-                            </p>
-                            <p style={{ margin: '0 0 8px 0' }}>
-                              <span style={{
-                                background: getPriorityColor(task.priority),
-                                color: '#fff',
-                                padding: '2px 8px',
-                                borderRadius: '4px',
-                                fontSize: '12px'
-                              }}>
-                                {task.priority || 'Not set'}
-                              </span>
-                            </p>
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                              <Link to={`/edit/${task._id}`}>
-                                <button style={{
-                                  padding: '6px 12px',
-                                  borderRadius: '4px',
-                                  background: '#007bff',
-                                  color: '#fff',
-                                  border: 'none',
-                                  cursor: 'pointer'
-                                }}>Edit</button>
-                              </Link>
-                              <Link to={`/task/${task._id}`}>
-                                <button style={{
-                                  padding: '6px 12px',
-                                  borderRadius: '4px',
-                                  background: '#28a745',
-                                  color: '#fff',
-                                  border: 'none',
-                                  cursor: 'pointer'
-                                }}>Details</button>
-                              </Link>
-                            </div>
+                  {tasks.filter(task => task.status === status).map((task, index) => (
+                    <Draggable key={task._id} draggableId={task._id} index={index}>
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          className={`bg-gray-100 dark:bg-gray-700 border-l-4 ${getPriorityColor(task.priority)} p-3 rounded mb-3`}
+                        >
+                          <h4 className="font-bold">{task.title}</h4>
+                          <p>{task.description}</p>
+                          <p className="text-sm text-gray-500 mt-1">
+                            Due: {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'Not set'}
+                          </p>
+                          <div className="flex gap-2 mt-2">
+                            <Link to={`/edit/${task._id}`}>
+                              <button className="px-2 py-1 text-xs bg-blue-500 text-white rounded">Edit</button>
+                            </Link>
+                            <Link to={`/task/${task._id}`}>
+                              <button className="px-2 py-1 text-xs bg-green-600 text-white rounded">Details</button>
+                            </Link>
                           </div>
-                        )}
-                      </Draggable>
-                    ))}
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
                   {provided.placeholder}
                 </div>
               )}
