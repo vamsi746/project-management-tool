@@ -1,122 +1,170 @@
-import React, { useState } from 'react';
+// src/pages/Login.js
+import React, { useState, useEffect } from 'react';
 import axiosInstance from '../utils/axiosInstance';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useNavigate, Link } from 'react-router-dom';
 
-function AddTask() {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [dueDate, setDueDate] = useState('');
-  const [priority, setPriority] = useState('');
-  const [teamInput, setTeamInput] = useState('');
-  const [error, setError] = useState('');
+function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem('darkMode') === 'true'
+  );
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.body.style.backgroundColor = darkMode ? '#121212' : '#f0f2f5';
+    document.body.style.color = darkMode ? '#f0f0f0' : '#333';
+  }, [darkMode]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const teamArray = teamInput
-      .split(',')
-      .map((member) => member.trim())
-      .filter(Boolean);
+    setMessage('');
+    setLoading(true);
 
     try {
-      await axiosInstance.post('/tasks', {
-        title,
-        description,
-        dueDate: dueDate ? new Date(dueDate) : null,
-        priority,
-        team: teamArray,
-        status: 'To Do',
-        comments: [],
+      const res = await axiosInstance.post('/auth/login', {
+        email,
+        password,
       });
 
-      toast.success('✅ Task added successfully!');
-      navigate('/');
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('name', res.data.user.name);
+
+      setMessage('✅ Login successful!');
+      setTimeout(() => navigate('/'), 1000);
     } catch (err) {
-      console.error('Error adding task:', err);
-      setError('Failed to add task. Please try again.');
-      toast.error('❌ Failed to add task.');
+      console.error('Login error:', err);
+      setMessage(err.response?.data?.message || 'Login failed.');
+    } finally {
+      setLoading(false);
     }
   };
 
+  const toggleDarkMode = () => {
+    const next = !darkMode;
+    setDarkMode(next);
+    localStorage.setItem('darkMode', next);
+  };
+
   return (
-    <div className="w-full max-w-md mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-      <div className="p-6 rounded-xl shadow-xl backdrop-blur-md bg-white/10 dark:bg-gray-800/20 border border-gray-200 dark:border-gray-700">
-        <h2 className="text-3xl font-bold mb-6 text-green-500">Add New Task</h2>
-
-        {error && (
-          <p className="mb-4 text-red-500 font-medium">{error}</p>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block mb-1 font-medium">Title</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              className="w-full px-4 py-2 rounded bg-white/80 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-medium">Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              rows={3}
-              className="w-full px-4 py-2 rounded bg-white/80 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-medium">Due Date</label>
-            <input
-              type="date"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-              className="w-full px-4 py-2 rounded bg-white/80 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 font-medium">Priority</label>
-            <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
-              className="w-full px-4 py-2 rounded bg-white/80 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-            >
-              <option value="">Select</option>
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block mb-1 font-medium">Team Members (comma separated)</label>
-            <input
-              type="text"
-              value={teamInput}
-              onChange={(e) => setTeamInput(e.target.value)}
-              placeholder="e.g. Alice, Bob"
-              className="w-full px-4 py-2 rounded bg-white/80 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full mt-4 px-4 py-2 rounded bg-green-500 hover:bg-green-600 text-white font-medium transition"
+    <div
+      style={{
+        maxWidth: '400px',
+        margin: '80px auto',
+        padding: '30px',
+        borderRadius: '12px',
+        boxShadow: darkMode
+          ? '0 0 20px rgba(0,0,0,0.7)'
+          : '0 0 20px rgba(0,0,0,0.1)',
+        backgroundColor: darkMode ? '#1e1e1e' : '#ffffff',
+        textAlign: 'center',
+        transition: 'all 0.3s ease',
+      }}
+    >
+      <h2 style={{ fontSize: '24px', marginBottom: '10px' }}>Login</h2>
+      <p style={{ fontSize: '14px', color: '#888' }}>
+        Welcome back! Please login to your account.
+      </p>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          marginTop: '20px',
+        }}
+      >
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          style={{
+            padding: '12px',
+            borderRadius: '6px',
+            border: '1px solid #ccc',
+            backgroundColor: darkMode ? '#333' : '#fff',
+            color: darkMode ? '#f0f0f0' : '#000',
+            fontSize: '14px',
+          }}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          style={{
+            padding: '12px',
+            borderRadius: '6px',
+            border: '1px solid #ccc',
+            backgroundColor: darkMode ? '#333' : '#fff',
+            color: darkMode ? '#f0f0f0' : '#000',
+            fontSize: '14px',
+          }}
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            padding: '12px',
+            borderRadius: '6px',
+            border: 'none',
+            backgroundColor: '#4CAF50',
+            color: '#fff',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            fontSize: '15px',
+            transition: 'background 0.3s',
+          }}
+        >
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
+        <button
+          type="button"
+          onClick={toggleDarkMode}
+          style={{
+            padding: '10px',
+            borderRadius: '6px',
+            border: 'none',
+            backgroundColor: darkMode ? '#555' : '#333',
+            color: '#fff',
+            cursor: 'pointer',
+            fontSize: '14px',
+          }}
+        >
+          {darkMode ? '🌞 Light Mode' : '🌙 Dark Mode'}
+        </button>
+        {message && (
+          <p
+            style={{
+              color: message.includes('✅') ? 'lightgreen' : 'red',
+              marginTop: '10px',
+            }}
           >
-            Add Task
-          </button>
-        </form>
-      </div>
+            {message}
+          </p>
+        )}
+      </form>
+      <p style={{ marginTop: '20px', fontSize: '14px' }}>
+        Don't have an account?{' '}
+        <Link
+          to="/register"
+          style={{
+            color: '#4CAF50',
+            textDecoration: 'none',
+            fontWeight: 'bold',
+          }}
+        >
+          Register
+        </Link>
+      </p>
     </div>
   );
 }
 
-export default AddTask;
+export default Login;
