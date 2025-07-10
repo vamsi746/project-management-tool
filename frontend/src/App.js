@@ -1,59 +1,102 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Navbar from './components/Navbar';
 
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import TaskList from "./pages/TaskList";
-import AddTask from "./pages/AddTask";
-import EditTask from "./pages/EditTask";
-import KanbanBoard from './pages/KanbanBoard';
-import TaskDetails from './pages/TaskDetails';
-import Analytics from './pages/Analytics';
-import GanttChart from './pages/GanttChart';
+// Your pages
 import Login from './pages/Login';
 import Register from './pages/Register';
-import ProtectedRoute from './components/ProtectedRoute';
-import Navbar from './components/Navbar';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import TaskList from './pages/TaskList';
+import AddTask from './pages/AddTask';
+import EditTask from './pages/EditTask';
+import TaskDetails from './pages/TaskDetails';
+import KanbanBoard from './pages/KanbanBoard';
+import Analytics from './pages/Analytics';
+import GanttChart from './pages/GanttChart';
+
+// Protected Route Component
+function PrivateRoute({ children }) {
+  const token = localStorage.getItem('token');
+  return token ? children : <Navigate to="/login" replace />;
+}
 
 function App() {
-  return (
-    <Router>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-all duration-300">
-        <Navbar />
-        <main className="max-w-5xl mx-auto px-4 py-6">
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+  return (
+    <Router>
+      <Navbar />
+      <div style={{ padding: '20px' }}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-            {/* Protected Routes */}
-            <Route path="/" element={
-              <ProtectedRoute><TaskList /></ProtectedRoute>
-            } />
-            <Route path="/add" element={
-              <ProtectedRoute><AddTask /></ProtectedRoute>
-            } />
-            <Route path="/edit/:id" element={
-              <ProtectedRoute><EditTask /></ProtectedRoute>
-            } />
-            <Route path="/kanban" element={
-              <ProtectedRoute><KanbanBoard /></ProtectedRoute>
-            } />
-            <Route path="/task/:id" element={
-              <ProtectedRoute><TaskDetails /></ProtectedRoute>
-            } />
-            <Route path="/analytics" element={
-              <ProtectedRoute><Analytics /></ProtectedRoute>
-            } />
-            <Route path="/gantt" element={
-              <ProtectedRoute><GanttChart /></ProtectedRoute>
-            } />
-          </Routes>
-        </main>
-        <ToastContainer position="top-right" autoClose={3000} />
-      </div>
-    </Router>
-  );
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <TaskList />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/add"
+            element={
+              <PrivateRoute>
+                <AddTask />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/edit/:id"
+            element={
+              <PrivateRoute>
+                <EditTask />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/task/:id"
+            element={
+              <PrivateRoute>
+                <TaskDetails />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/kanban"
+            element={
+              <PrivateRoute>
+                <KanbanBoard />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/analytics"
+            element={
+              <PrivateRoute>
+                <Analytics />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/gantt"
+            element={
+              <PrivateRoute>
+                <GanttChart />
+              </PrivateRoute>
+            }
+          />
+
+          {/* fallback route */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
 export default App;
