@@ -16,7 +16,8 @@ app.use(
   cors({
     origin: [
       'http://localhost:3000',
-      'https://project-management-tool-delta-rosy.vercel.app' // ✅ your Vercel frontend
+      'https://project-management-tool-k4sdn3hnx-vamsi746s-projects.vercel.app',
+      'https://project-management-tool-delta-rosy.vercel.app'// ✅ your Vercel frontend
     ],
     credentials: false, // ❌ disable credentials since you are using JWT in headers
   })
