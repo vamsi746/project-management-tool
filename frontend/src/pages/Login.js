@@ -1,7 +1,7 @@
 // src/pages/Login.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -31,7 +31,7 @@ function Login() {
       });
 
       localStorage.setItem('token', res.data.token);
-      localStorage.setItem('name', res.data.name); // save name for greeting
+      localStorage.setItem('name', res.data.name);
 
       setMessage('✅ Login successful!');
       setTimeout(() => navigate('/'), 1000);
@@ -53,24 +53,28 @@ function Login() {
     <div
       style={{
         maxWidth: '400px',
-        margin: '100px auto',
+        margin: '80px auto',
         padding: '30px',
-        borderRadius: '10px',
+        borderRadius: '12px',
         boxShadow: darkMode
-          ? '0 0 10px rgba(0,0,0,0.7)'
-          : '0 0 10px rgba(0,0,0,0.1)',
+          ? '0 0 20px rgba(0,0,0,0.7)'
+          : '0 0 20px rgba(0,0,0,0.1)',
         backgroundColor: darkMode ? '#1e1e1e' : '#ffffff',
-        textAlign: 'center'
+        textAlign: 'center',
+        transition: 'all 0.3s ease',
       }}
     >
-      <h2>Login</h2>
+      <h2 style={{ fontSize: '24px', marginBottom: '10px' }}>Login</h2>
+      <p style={{ fontSize: '14px', color: '#888' }}>
+        Welcome back! Please login to your account.
+      </p>
       <form
         onSubmit={handleSubmit}
         style={{
           display: 'flex',
           flexDirection: 'column',
           gap: '16px',
-          marginTop: '20px'
+          marginTop: '20px',
         }}
       >
         <input
@@ -80,11 +84,12 @@ function Login() {
           onChange={(e) => setEmail(e.target.value)}
           required
           style={{
-            padding: '10px',
-            borderRadius: '4px',
+            padding: '12px',
+            borderRadius: '6px',
             border: '1px solid #ccc',
             backgroundColor: darkMode ? '#333' : '#fff',
-            color: darkMode ? '#f0f0f0' : '#000'
+            color: darkMode ? '#f0f0f0' : '#000',
+            fontSize: '14px',
           }}
         />
         <input
@@ -94,24 +99,27 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
           required
           style={{
-            padding: '10px',
-            borderRadius: '4px',
+            padding: '12px',
+            borderRadius: '6px',
             border: '1px solid #ccc',
             backgroundColor: darkMode ? '#333' : '#fff',
-            color: darkMode ? '#f0f0f0' : '#000'
+            color: darkMode ? '#f0f0f0' : '#000',
+            fontSize: '14px',
           }}
         />
         <button
           type="submit"
           disabled={loading}
           style={{
-            padding: '10px',
-            borderRadius: '4px',
+            padding: '12px',
+            borderRadius: '6px',
             border: 'none',
             backgroundColor: '#4CAF50',
             color: '#fff',
             cursor: 'pointer',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            fontSize: '15px',
+            transition: 'background 0.3s',
           }}
         >
           {loading ? 'Logging in...' : 'Login'}
@@ -120,13 +128,13 @@ function Login() {
           type="button"
           onClick={toggleDarkMode}
           style={{
-            padding: '8px',
-            borderRadius: '4px',
+            padding: '10px',
+            borderRadius: '6px',
             border: 'none',
             backgroundColor: darkMode ? '#555' : '#333',
             color: '#fff',
             cursor: 'pointer',
-            fontSize: '14px'
+            fontSize: '14px',
           }}
         >
           {darkMode ? '🌞 Light Mode' : '🌙 Dark Mode'}
@@ -135,13 +143,26 @@ function Login() {
           <p
             style={{
               color: message.includes('✅') ? 'lightgreen' : 'red',
-              marginTop: '10px'
+              marginTop: '10px',
             }}
           >
             {message}
           </p>
         )}
       </form>
+      <p style={{ marginTop: '20px', fontSize: '14px' }}>
+        Don't have an account?{' '}
+        <Link
+          to="/register"
+          style={{
+            color: '#4CAF50',
+            textDecoration: 'none',
+            fontWeight: 'bold',
+          }}
+        >
+          Register
+        </Link>
+      </p>
     </div>
   );
 }
