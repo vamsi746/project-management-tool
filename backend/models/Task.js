@@ -24,9 +24,14 @@ const TaskSchema = new mongoose.Schema({
     }
   }],
   team: [{
-    type: String,  // Can be names or emails for now
+    type: String,
     required: false
-  }]
+  }],
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Task', TaskSchema);
