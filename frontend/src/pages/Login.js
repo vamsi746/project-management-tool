@@ -1,9 +1,9 @@
-// src/pages/Login.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 
-function Login() {
+function Register() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -24,20 +24,24 @@ function Login() {
     setMessage('');
     setLoading(true);
 
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      setMessage('All fields are required');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const res = await axios.post('http://localhost:5000/auth/login', {
-        email,
-        password,
+      const res = await axios.post('http://localhost:5000/auth/register', {
+        name: name.trim(),
+        email: email.trim(),
+        password: password.trim(),
       });
 
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('name', res.data.name);
-
-      setMessage('✅ Login successful!');
-      setTimeout(() => navigate('/'), 1000);
+      setMessage(res.data.message || 'Registered successfully');
+      setTimeout(() => navigate('/login'), 1500);
     } catch (err) {
-      console.error('Login error:', err);
-      setMessage(err.response?.data?.message || 'Login failed.');
+      console.error('Registration error:', err);
+      setMessage(err.response?.data?.message || 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -64,9 +68,9 @@ function Login() {
         transition: 'all 0.3s ease',
       }}
     >
-      <h2 style={{ fontSize: '24px', marginBottom: '10px' }}>Login</h2>
+      <h2 style={{ fontSize: '24px', marginBottom: '10px' }}>Register</h2>
       <p style={{ fontSize: '14px', color: '#888' }}>
-        Welcome back! Please login to your account.
+        Create your account below.
       </p>
       <form
         onSubmit={handleSubmit}
@@ -77,6 +81,21 @@ function Login() {
           marginTop: '20px',
         }}
       >
+        <input
+          type="text"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          style={{
+            padding: '12px',
+            borderRadius: '6px',
+            border: '1px solid #ccc',
+            backgroundColor: darkMode ? '#333' : '#fff',
+            color: darkMode ? '#f0f0f0' : '#000',
+            fontSize: '14px',
+          }}
+        />
         <input
           type="email"
           placeholder="Email"
@@ -122,7 +141,7 @@ function Login() {
             transition: 'background 0.3s',
           }}
         >
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? 'Registering...' : 'Register'}
         </button>
         <button
           type="button"
@@ -142,7 +161,7 @@ function Login() {
         {message && (
           <p
             style={{
-              color: message.includes('✅') ? 'lightgreen' : 'red',
+              color: message.includes('successfully') ? 'lightgreen' : 'red',
               marginTop: '10px',
             }}
           >
@@ -151,20 +170,20 @@ function Login() {
         )}
       </form>
       <p style={{ marginTop: '20px', fontSize: '14px' }}>
-        Don't have an account?{' '}
+        Already have an account?{' '}
         <Link
-          to="/register"
+          to="/login"
           style={{
             color: '#4CAF50',
             textDecoration: 'none',
             fontWeight: 'bold',
           }}
         >
-          Register
+          Login
         </Link>
       </p>
     </div>
   );
 }
 
-export default Login;
+export default Register;
