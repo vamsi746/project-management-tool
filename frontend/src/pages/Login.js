@@ -1,6 +1,6 @@
 // src/pages/Login.js
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
 import { useNavigate, Link } from 'react-router-dom';
 
 function Login() {
