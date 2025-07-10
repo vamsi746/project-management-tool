@@ -23,8 +23,7 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, password: hashedPassword });
+    const newUser = new User({ name, email, password });
     await newUser.save();
 
     console.log('✅ User registered successfully');
@@ -57,12 +56,7 @@ router.post('/login', async (req, res) => {
     console.log("✅ User found. Stored hash:", user.password);
     console.log("🔑 Plain password entered:", password);
 
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    console.log("🔍 bcrypt.compare result:", isMatch);
-
-    if (!isMatch) {
-      console.log("❌ Password mismatch");
+    if (password !== user.password) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
