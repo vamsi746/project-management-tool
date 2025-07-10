@@ -108,6 +108,8 @@ function Navbar() {
                 <NavLink to="/analytics" label="Analytics" darkMode={darkMode} />
                 <NavLink to="/gantt" label="Gantt" darkMode={darkMode} />
                 <NavLink to="/kanban" label="Kanban" darkMode={darkMode} />
+                <NavLink to="/contact" label="Contact" darkMode={darkMode} />
+
               </div>
               <div
                 style={{
@@ -190,6 +192,8 @@ function Navbar() {
                 <NavLink to="/analytics" label="Analytics" darkMode={darkMode} />
                 <NavLink to="/gantt" label="Gantt" darkMode={darkMode} />
                 <NavLink to="/kanban" label="Kanban" darkMode={darkMode} />
+                <NavLink to="/contact" label="Contact" darkMode={darkMode} />
+
               </div>
               <div style={{ display: "flex", gap: "12px" }}>
                 <button onClick={toggleDarkMode} style={buttonStyle(darkMode)}>
