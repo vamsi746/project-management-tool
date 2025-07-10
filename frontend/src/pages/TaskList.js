@@ -38,7 +38,10 @@ function TaskList() {
       <h2 className="text-xl sm:text-2xl font-bold mb-4">Task List</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {tasks.map(task => (
-          <div key={task._id} className="bg-white dark:bg-gray-800 p-4 rounded shadow flex flex-col justify-between">
+          <div
+            key={task._id}
+            className="bg-white dark:bg-gray-800 p-4 rounded shadow flex flex-col justify-between"
+          >
             <Link to={`/task/${task._id}`}>
               <h3 className="font-semibold mb-2">{task.title}</h3>
             </Link>
@@ -56,6 +59,11 @@ function TaskList() {
               <Link to={`/edit/${task._id}`}>
                 <button className="w-full sm:w-auto bg-blue-600 text-white px-3 py-1 rounded">
                   Edit
+                </button>
+              </Link>
+              <Link to={`/taskdetails/${task._id}`}>
+                <button className="w-full sm:w-auto bg-green-600 text-white px-3 py-1 rounded">
+                  Details
                 </button>
               </Link>
             </div>
