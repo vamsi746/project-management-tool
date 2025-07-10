@@ -31,7 +31,7 @@ function Register() {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/auth/register', {
+      const res = await axios.post('https://project-management-tool-wtmq.onrender.com/api/auth/register', {
         name: name.trim(),
         email: email.trim(),
         password: password.trim(),
