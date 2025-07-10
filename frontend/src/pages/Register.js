@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance'; // ✅ using your custom axios instance
 import { useNavigate, Link } from 'react-router-dom';
 
 function Register() {
@@ -31,7 +31,7 @@ function Register() {
     }
 
     try {
-      const res = await axios.post('https://project-management-tool-wtmq.onrender.com/api/auth/register', {
+      const res = await axiosInstance.post('/auth/register', {
         name: name.trim(),
         email: email.trim(),
         password: password.trim(),
