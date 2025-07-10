@@ -41,23 +41,34 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    console.log("📥 Login request body:", req.body);
+
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
     const user = await User.findOne({ email });
+
     if (!user) {
+      console.log("❌ User not found for email:", email);
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
+    console.log("✅ User found. Stored hash:", user.password);
+    console.log("🔑 Plain password entered:", password);
+
     const isMatch = await bcrypt.compare(password, user.password);
+
+    console.log("🔍 bcrypt.compare result:", isMatch);
+
     if (!isMatch) {
+      console.log("❌ Password mismatch");
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
     const token = jwt.sign(
       { userId: user._id },
-      JWT_SECRET,
+      process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
 
@@ -67,5 +78,6 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 module.exports = router;
