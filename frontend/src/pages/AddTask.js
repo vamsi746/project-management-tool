@@ -25,9 +25,11 @@ function Login() {
     setLoading(true);
 
     try {
-      const res = await axiosInstance.post('/auth/login', {
-        email,
-        password,
+      const res = await axiosInstance.post('/tasks', {
+        title,
+        description,
+        duedate,
+        priority,
       });
 
       localStorage.setItem('token', res.data.token);
