@@ -1,102 +1,149 @@
 // src/pages/Login.js
-import React, { useState } from 'react';
-import axiosInstance from '../utils/axiosInstance'; // ✅ Correct
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem('darkMode') === 'true'
+  );
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+  const navigate = useNavigate();
 
-    try {
-      const res = await axiosInstance.post('/auth/login', {
-        email: email.trim(),
-        password: password.trim(),
-      });
+  useEffect(() => {
+    document.body.style.backgroundColor = darkMode ? '#121212' : '#f0f2f5';
+    document.body.style.color = darkMode ? '#f0f0f0' : '#333';
+  }, [darkMode]);
 
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage('');
+    setLoading(true);
 
-  return (
-    <div style={styles.container}>
-      <h2 style={styles.title}>Login</h2>
-      <form onSubmit={handleLogin} style={styles.form}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={styles.input}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={styles.input}
-        />
-        <button type="submit" style={styles.button} disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-        {error && <p style={styles.error}>{error}</p>}
-      </form>
-    </div>
-  );
+    try {
+      const res = await axios.post('http://localhost:5000/auth/login', {
+        email,
+        password,
+      });
+
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('name', res.data.name); // save name for greeting
+
+      setMessage('✅ Login successful!');
+      setTimeout(() => navigate('/'), 1000);
+    } catch (err) {
+      console.error('Login error:', err);
+      setMessage(err.response?.data?.message || 'Login failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleDarkMode = () => {
+    const next = !darkMode;
+    setDarkMode(next);
+    localStorage.setItem('darkMode', next);
+  };
+
+  return (
+    <div
+      style={{
+        maxWidth: '400px',
+        margin: '100px auto',
+        padding: '30px',
+        borderRadius: '10px',
+        boxShadow: darkMode
+          ? '0 0 10px rgba(0,0,0,0.7)'
+          : '0 0 10px rgba(0,0,0,0.1)',
+        backgroundColor: darkMode ? '#1e1e1e' : '#ffffff',
+        textAlign: 'center'
+      }}
+    >
+      <h2>Login</h2>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          marginTop: '20px'
+        }}
+      >
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          style={{
+            padding: '10px',
+            borderRadius: '4px',
+            border: '1px solid #ccc',
+            backgroundColor: darkMode ? '#333' : '#fff',
+            color: darkMode ? '#f0f0f0' : '#000'
+          }}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          style={{
+            padding: '10px',
+            borderRadius: '4px',
+            border: '1px solid #ccc',
+            backgroundColor: darkMode ? '#333' : '#fff',
+            color: darkMode ? '#f0f0f0' : '#000'
+          }}
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            padding: '10px',
+            borderRadius: '4px',
+            border: 'none',
+            backgroundColor: '#4CAF50',
+            color: '#fff',
+            cursor: 'pointer',
+            fontWeight: 'bold'
+          }}
+        >
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
+        <button
+          type="button"
+          onClick={toggleDarkMode}
+          style={{
+            padding: '8px',
+            borderRadius: '4px',
+            border: 'none',
+            backgroundColor: darkMode ? '#555' : '#333',
+            color: '#fff',
+            cursor: 'pointer',
+            fontSize: '14px'
+          }}
+        >
+          {darkMode ? '🌞 Light Mode' : '🌙 Dark Mode'}
+        </button>
+        {message && (
+          <p
+            style={{
+              color: message.includes('✅') ? 'lightgreen' : 'red',
+              marginTop: '10px'
+            }}
+          >
+            {message}
+          </p>
+        )}
+      </form>
+    </div>
+  );
 }
-
-const styles = {
-  container: {
-    maxWidth: '400px',
-    margin: '100px auto',
-    padding: '20px',
-    boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-    borderRadius: '8px',
-    backgroundColor: '#fff',
-    textAlign: 'center',
-  },
-  title: {
-    marginBottom: '20px',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
-  },
-  input: {
-    padding: '10px',
-    fontSize: '16px',
-    borderRadius: '6px',
-    border: '1px solid #ccc',
-  },
-  button: {
-    padding: '10px',
-    fontSize: '16px',
-    backgroundColor: '#007bff',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '6px',
-    cursor: 'pointer',
-  },
-  error: {
-    color: 'red',
-    marginTop: '10px',
-  }
-};
 
 export default Login;
