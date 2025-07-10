@@ -11,6 +11,7 @@ import TaskDetails from './pages/TaskDetails';
 import KanbanBoard from './pages/KanbanBoard';
 import Analytics from './pages/Analytics';
 import GanttChart from './pages/GanttChart';
+import Contact from './pages/Contact';
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token');
@@ -85,6 +86,14 @@ function App() {
             element={
               <PrivateRoute>
                 <GanttChart />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              <PrivateRoute>
+                <Contact />
               </PrivateRoute>
             }
           />
