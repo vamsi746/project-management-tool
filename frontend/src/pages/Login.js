@@ -25,13 +25,13 @@ function Login() {
     setLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:5000/auth/login', {
+      const res = await axiosInstance.post('/auth/login', {
         email,
         password,
       });
 
       localStorage.setItem('token', res.data.token);
-      localStorage.setItem('name', res.data.name);
+      localStorage.setItem('name', res.data.user.name);
 
       setMessage('✅ Login successful!');
       setTimeout(() => navigate('/'), 1000);
@@ -168,3 +168,4 @@ function Login() {
 }
 
 export default Login;
+
