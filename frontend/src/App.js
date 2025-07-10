@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 
-// Your pages
 import Login from './pages/Login';
 import Register from './pages/Register';
 import TaskList from './pages/TaskList';
@@ -13,7 +12,6 @@ import KanbanBoard from './pages/KanbanBoard';
 import Analytics from './pages/Analytics';
 import GanttChart from './pages/GanttChart';
 
-// Protected Route Component
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token');
   return token ? children : <Navigate to="/login" replace />;
@@ -56,7 +54,7 @@ function App() {
           />
 
           <Route
-            path="/task/:id"
+            path="/taskdetails/:id"
             element={
               <PrivateRoute>
                 <TaskDetails />
@@ -91,7 +89,6 @@ function App() {
             }
           />
 
-          {/* fallback route */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
