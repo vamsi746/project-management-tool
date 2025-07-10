@@ -1,4 +1,3 @@
-// src/components/Navbar.js
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -8,6 +7,8 @@ function Navbar() {
     localStorage.getItem("darkMode") === "true"
   );
   const navigate = useNavigate();
+
+  const isLoggedIn = !!localStorage.getItem("token");
 
   useEffect(() => {
     document.body.style.backgroundColor = darkMode ? "#121212" : "#f0f2f5";
@@ -90,44 +91,77 @@ function Navbar() {
             transition: "all 0.3s ease",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "10px",
-              paddingBottom: "10px",
-              borderBottom: "1px solid #444",
-            }}
-          >
-            <NavLink to="/" label="Dashboard" darkMode={darkMode} />
-            <NavLink to="/add" label="Add Task" darkMode={darkMode} />
-            <NavLink to="/analytics" label="Analytics" darkMode={darkMode} />
-            <NavLink to="/gantt" label="Gantt" darkMode={darkMode} />
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "10px",
-              marginTop: "10px",
-            }}
-          >
-            <button onClick={toggleDarkMode} style={buttonStyle(darkMode)}>
-              {darkMode ? "🌞 Light Mode" : "🌙 Dark Mode"}
-            </button>
-            <button
-              onClick={handleLogout}
-              style={{
-                ...buttonStyle(darkMode),
-                backgroundColor: "#d9534f",
-              }}
-            >
-              Logout
-            </button>
-          </div>
+          {isLoggedIn ? (
+            <>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "10px",
+                  paddingBottom: "10px",
+                  borderBottom: "1px solid #444",
+                }}
+              >
+                <NavLink to="/" label="Dashboard" darkMode={darkMode} />
+                <NavLink to="/add" label="Add Task" darkMode={darkMode} />
+                <NavLink to="/analytics" label="Analytics" darkMode={darkMode} />
+                <NavLink to="/gantt" label="Gantt" darkMode={darkMode} />
+                <NavLink to="/kanban" label="Kanban" darkMode={darkMode} />
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "10px",
+                  marginTop: "10px",
+                }}
+              >
+                <button onClick={toggleDarkMode} style={buttonStyle(darkMode)}>
+                  {darkMode ? "🌞 Light Mode" : "🌙 Dark Mode"}
+                </button>
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    ...buttonStyle(darkMode),
+                    backgroundColor: "#d9534f",
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "10px",
+                  paddingBottom: "10px",
+                  borderBottom: "1px solid #444",
+                }}
+              >
+                <NavLink to="/login" label="Login" darkMode={darkMode} />
+                <NavLink to="/register" label="Register" darkMode={darkMode} />
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "10px",
+                  marginTop: "10px",
+                }}
+              >
+                <button onClick={toggleDarkMode} style={buttonStyle(darkMode)}>
+                  {darkMode ? "🌞 Light Mode" : "🌙 Dark Mode"}
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Desktop Menu */}
@@ -136,37 +170,58 @@ function Navbar() {
           style={{
             display: "none",
             width: "100%",
-            justifyContent: "space-between",
+            justifyContent: "center",
             alignItems: "center",
+            gap: "20px",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "12px",
-              flex: 1,
-            }}
-          >
-            <NavLink to="/" label="Dashboard" darkMode={darkMode} />
-            <NavLink to="/add" label="Add Task" darkMode={darkMode} />
-            <NavLink to="/analytics" label="Analytics" darkMode={darkMode} />
-            <NavLink to="/gantt" label="Gantt" darkMode={darkMode} />
-          </div>
-          <div style={{ display: "flex", gap: "12px" }}>
-            <button onClick={toggleDarkMode} style={buttonStyle(darkMode)}>
-              {darkMode ? "🌞 Light" : "🌙 Dark"}
-            </button>
-            <button
-              onClick={handleLogout}
+          {isLoggedIn ? (
+            <>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "12px",
+                  flex: 1,
+                }}
+              >
+                <NavLink to="/" label="Dashboard" darkMode={darkMode} />
+                <NavLink to="/add" label="Add Task" darkMode={darkMode} />
+                <NavLink to="/analytics" label="Analytics" darkMode={darkMode} />
+                <NavLink to="/gantt" label="Gantt" darkMode={darkMode} />
+                <NavLink to="/kanban" label="Kanban" darkMode={darkMode} />
+              </div>
+              <div style={{ display: "flex", gap: "12px" }}>
+                <button onClick={toggleDarkMode} style={buttonStyle(darkMode)}>
+                  {darkMode ? "🌞 Light" : "🌙 Dark"}
+                </button>
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    ...buttonStyle(darkMode),
+                    backgroundColor: "#d9534f",
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
+            </>
+          ) : (
+            <div
               style={{
-                ...buttonStyle(darkMode),
-                backgroundColor: "#d9534f",
+                display: "flex",
+                justifyContent: "center",
+                gap: "12px",
+                flex: 1,
               }}
             >
-              Logout
-            </button>
-          </div>
+              <NavLink to="/login" label="Login" darkMode={darkMode} />
+              <NavLink to="/register" label="Register" darkMode={darkMode} />
+              <button onClick={toggleDarkMode} style={buttonStyle(darkMode)}>
+                {darkMode ? "🌞 Light" : "🌙 Dark"}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
