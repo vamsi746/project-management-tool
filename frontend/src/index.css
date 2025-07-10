@@ -1,9 +1,14 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Optional: Smooth grayscale transition */
+/* Optional: Smooth grayscale and theme transition for all elements */
 * {
   transition: all 0.3s ease-in-out;
+  scroll-behavior: smooth;
+}
+/* in index.css */
+body.dark-mode .card {
+  background: #333;
+  color: #eee;
 }
