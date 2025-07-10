@@ -13,6 +13,7 @@ const authRoutes = require('./routes/auth');
 // ✅ Custom CORS middleware
 const allowedOrigins = [
   'http://localhost:3000',
+  'https://project-management-tool-pszc1hloj-vamsi746s-projects.vercel.app',
   'https://project-management-tool-k4sdn3hnx-vamsi746s-projects.vercel.app',
   'https://project-management-tool-delta-rosy.vercel.app'
 ];
