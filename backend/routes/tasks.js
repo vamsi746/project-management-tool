@@ -3,8 +3,6 @@ const router = express.Router();
 const Task = require('../models/Task');
 const verifyToken = require('../middleware/authMiddleware');
 
-// 🔒 Protect all routes that require a logged-in user
-
 // Create a new task (protected)
 router.post('/', verifyToken, async (req, res) => {
   try {
@@ -17,7 +15,7 @@ router.post('/', verifyToken, async (req, res) => {
       assignee,
       priority,
       team,
-      createdBy: req.user.userId // Track who created it
+      createdBy: req.user.userId // ✅ Track task creator
     });
 
     const savedTask = await newTask.save();
@@ -27,20 +25,20 @@ router.post('/', verifyToken, async (req, res) => {
   }
 });
 
-// Get all tasks (protected)
+// Get all tasks for the logged-in user (protected)
 router.get('/', verifyToken, async (req, res) => {
   try {
-    const tasks = await Task.find(); // Optional: .find({ createdBy: req.user.userId })
+    const tasks = await Task.find({ createdBy: req.user.userId });
     res.json(tasks);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Get a single task by ID (protected)
+// Get a single task by ID (protected & user-owned only)
 router.get('/:id', verifyToken, async (req, res) => {
   try {
-    const task = await Task.findById(req.params.id);
+    const task = await Task.findOne({ _id: req.params.id, createdBy: req.user.userId });
     if (!task) return res.status(404).json({ message: 'Task not found' });
     res.json(task);
   } catch (err) {
@@ -48,11 +46,11 @@ router.get('/:id', verifyToken, async (req, res) => {
   }
 });
 
-// Update a task (protected)
+// Update a task (protected & user-owned only)
 router.put('/:id', verifyToken, async (req, res) => {
   try {
-    const updatedTask = await Task.findByIdAndUpdate(
-      req.params.id,
+    const updatedTask = await Task.findOneAndUpdate(
+      { _id: req.params.id, createdBy: req.user.userId },
       {
         title: req.body.title,
         description: req.body.description,
@@ -64,27 +62,30 @@ router.put('/:id', verifyToken, async (req, res) => {
       },
       { new: true }
     );
+
+    if (!updatedTask) return res.status(404).json({ message: 'Task not found or not yours' });
     res.json(updatedTask);
   } catch (err) {
     res.status(500).json({ message: 'Error updating task', error: err });
   }
 });
 
-// Delete a task (protected)
+// Delete a task (protected & user-owned only)
 router.delete('/:id', verifyToken, async (req, res) => {
   try {
-    await Task.findByIdAndDelete(req.params.id);
+    const deleted = await Task.findOneAndDelete({ _id: req.params.id, createdBy: req.user.userId });
+    if (!deleted) return res.status(404).json({ message: 'Task not found or not yours' });
     res.json({ message: 'Task deleted' });
   } catch (err) {
     res.status(500).json({ error: 'Failed to delete task' });
   }
 });
 
-// Add comment to a task (protected)
+// Add comment to a task (protected & user-owned only)
 router.post('/:id/comments', verifyToken, async (req, res) => {
   try {
     const { text, user } = req.body;
-    const task = await Task.findById(req.params.id);
+    const task = await Task.findOne({ _id: req.params.id, createdBy: req.user.userId });
     if (!task) return res.status(404).json({ message: 'Task not found' });
 
     const comment = {
@@ -102,10 +103,10 @@ router.post('/:id/comments', verifyToken, async (req, res) => {
   }
 });
 
-// Get analytics summary (protected)
+// Get analytics summary (protected, user-specific)
 router.get('/analytics/summary', verifyToken, async (req, res) => {
   try {
-    const tasks = await Task.find();
+    const tasks = await Task.find({ createdBy: req.user.userId });
 
     const summary = {
       total: tasks.length,
